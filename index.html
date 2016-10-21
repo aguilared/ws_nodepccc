@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chattt</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <div><h4>Web Socket. Tags del Gateway. Con SocketIO Nodejs.</h4></div>
+    <time></time>
+    <div id="container">Loading ...</div>
+    <BR>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+  </body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://alcasa-scp/js/jquery.min.js"></script>
+
+    <script>
+      var socket = io();
+      $('form').submit(function(){
+        //emitiendo
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+      //recibiendo
+      socket.on('chat message', function(msg){
+        $('#messages').append($('<li>').text(msg));
+      });
+    </script>
+
+    <script>
+        // create a new websocket
+        var socket = io.connect('http://al-1026:80');
+        // on message received we print all the data inside the #container div
+        socket.on('notification', function (data) {
+			var usersList = "<table border='1' cellpadding='0' cellspacing='0'>"+
+			"<tr><td>Presion</td><td>Amperaje</td><td>Voltaje linea</td><td>Contador</td></tr>";
+	        $.each(data.users,function(index,user){
+	            usersList += "<tr>"+
+	                         "<td>" + user.air_pressure+"</td>"+
+							 "<td>" + user.KiloAmps_Actual+"</td>"+
+							 "<td>" + user.voltaje_de_linea+"</td>"+
+							 "<td>" + user.cuenta+"</td>"+
+							 "</tr>";
+	        });
+        	usersList += "</table>";
+	        $('#container').html(usersList);
+
+	        $('time').html('Ultima Actualizacion:' + data.time);
+      	});
+
+    </script>
+</html>
